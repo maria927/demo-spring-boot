@@ -15,20 +15,25 @@ import com.demo.springboot.entity.User;
 import com.demo.springboot.repository.IUserRepository;
 import com.demo.springboot.service.IUserService;
 
+/**
+ * Clase que implementa las interface UserDetailsService de springframework.security.core
+ * @author mia97
+ *
+ */
 @Service
-public class UserService implements IUserService, UserDetailsService{
+public class UserService implements UserDetailsService{
 	
 	@Autowired
 	IUserRepository userRepository;
 
-	@Override
-	public User findByUsername(String username) {
-		return userRepository.findByUsername(username);
-	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		//Se obtiene el usuario por UserName
+		
+		/**
+		 * Se obtiene el usuario por UserName.
+		 * Tambien se podria llamar a un cliente o microservicio que retorne el usuario
+		 */
 		User user= userRepository.findByUsername(username);
 		
 		if (user == null) {
@@ -36,10 +41,12 @@ public class UserService implements IUserService, UserDetailsService{
 		}
 		
 		//Se convierten List<Roles> a List<GrantedAuthority>
+		
 		List<GrantedAuthority> authorities= user.getRoles()
 				.stream()
 				.map(role-> new SimpleGrantedAuthority(role.getName()))
 				.collect(Collectors.toList());
+		
 		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), user.getEnabled(), 
 				true, true, true, authorities);
 	}

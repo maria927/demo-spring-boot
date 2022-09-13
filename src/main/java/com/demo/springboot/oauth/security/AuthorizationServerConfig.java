@@ -30,12 +30,12 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	private AuthenticationManager authenticationManager;
 
 	/**
-	 * Configuracion de los permisos que va a tener el endpoint
+	 * Configuracion de los permisos que va a tener el endpoint en el servidor de autorizacion
 	 */
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-		security.tokenKeyAccess("permitAll()")
-		.checkTokenAccess("isAuthenticated()");
+		security.tokenKeyAccess("permitAll()") //Definir permisos para generar el token, en este ejemplo cualquiera puede generar token
+		.checkTokenAccess("isAuthenticated()"); //Validar el token. En este ejemplo, solo valida el token si esta autenticado
 	}
 
 	/**
@@ -43,20 +43,21 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	 */
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		clients.inMemory().withClient("androidApp")
-		.secret(passwordEnconder.encode("12345"))
-		.scopes("read", "write")
-		.authorizedGrantTypes("password", "refresh_token")
-		.accessTokenValiditySeconds(3600);
+		clients.inMemory().withClient("androidApp") //Se va a registrar el cliente llamado androidApp en memoria
+		.secret(passwordEnconder.encode("12345"))   //Se asigna una clave que a su vez va a ser encriptada
+		.scopes("read", "write") //Permisos de la aplicacion cliente
+		.authorizedGrantTypes("password", "refresh_token") //Definir como se va a obtener el token
+		.accessTokenValiditySeconds(3600) //Definir tiempo validez del token (en segundos)
+		.refreshTokenValiditySeconds(3600); //Definir tiempo de refresh del token (en segundos)
 	}
 
-	/**
+	/** Configuracion del tokenStore y accessTokenConverter
 	 * Guardar info del usuario en el token OAuth2
 	 */
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 		endpoints.authenticationManager(authenticationManager)
-		.tokenStore(tokenStore()) //Componente para guardar el Token
+		.tokenStore(tokenStore()) //Componente para almacenar el Token
 		.accessTokenConverter(accessTokenConverter());
 	}
 
@@ -66,7 +67,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	}
 	
 	/**
-	 * Componente encargado de convertir el token
+	 * Componente encargado de firmar el token agregando una clave
 	 * @return tokenConverter
 	 */
 
@@ -74,7 +75,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	public JwtAccessTokenConverter accessTokenConverter() {
 		JwtAccessTokenConverter tokenConverter= new JwtAccessTokenConverter();
 		//Se debe agregar codigo secreto al token
-		tokenConverter.setSigningKey("c0d1g0_s3cr370");
+		tokenConverter.setSigningKey("${token.signing.key}");
 		return tokenConverter;
 	}
 	

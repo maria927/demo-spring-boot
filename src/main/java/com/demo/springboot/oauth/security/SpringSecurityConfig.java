@@ -18,24 +18,31 @@ public class SpringSecurityConfig {
 	@Autowired
 	private UserDetailsService userDetailsService;
 
+	/**
+	 * Bean de BCryptPasswordEncoder para encriptar las contraseñas
+	 */
 	@Bean
 	public static BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+	
+	/**
+	 * Manejo autenticacion usuarios. Constructor donde se registra el UserDetailsService
+	 * @param build
+	 * @throws Exception
+	 */
 
 	@Autowired
 	public void configurerGlobal(AuthenticationManagerBuilder build) throws Exception {
 		build.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 	}
 
-//	@Bean
-//	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//		http.authorizeRequests().anyRequest().authenticated().and().csrf().disable().sessionManagement()
-//				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//
-//		return http.build();
-//	}
-
+	/**
+	 * Autenticacion del usuario
+	 * @param authenticationConfiguration
+	 * @return objeto AuthenticationManager
+	 * @throws Exception
+	 */
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
 			throws Exception {
