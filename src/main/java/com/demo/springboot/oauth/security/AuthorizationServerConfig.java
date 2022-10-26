@@ -28,6 +28,17 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
+	
+
+	/** Configuracion del tokenStore y accessTokenConverter
+	 * Guardar info del usuario en el token OAuth2
+	 */
+	@Override
+	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+		endpoints.authenticationManager(authenticationManager) //Maneja las peticiones de autenticacion
+		.tokenStore(tokenStore())
+		.accessTokenConverter(accessTokenConverter());
+	}
 
 	/**
 	 * Configuracion de los permisos que va a tener el endpoint en el servidor de autorizacion
@@ -51,16 +62,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		.refreshTokenValiditySeconds(3600); //Definir tiempo de refresh del token (en segundos)
 	}
 
-	/** Configuracion del tokenStore y accessTokenConverter
-	 * Guardar info del usuario en el token OAuth2
+	/**
+	 * Componente para almacenar el token
+	 * @return
 	 */
-	@Override
-	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-		endpoints.authenticationManager(authenticationManager)
-		.tokenStore(tokenStore()) //Componente para almacenar el Token
-		.accessTokenConverter(accessTokenConverter());
-	}
-
 	@Bean
 	public JwtTokenStore tokenStore() {
 		return new JwtTokenStore(accessTokenConverter());
