@@ -14,7 +14,7 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 /**
- * Configuracion del servidor de autenticacion que se encarga de todo el proceso de login con JWT
+ * Configuracion del servidor de autenticacion que se encarga de todo el proceso de login con JWT y OAuth2
  * @author mia97
  *
  */
