@@ -57,13 +57,13 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		clients.inMemory().withClient("androidApp") //Se va a registrar el cliente llamado androidApp en memoria
 		.secret(passwordEnconder.encode("12345"))   //Se asigna una clave que a su vez va a ser encriptada
 		.scopes("read", "write") //Permisos de la aplicacion cliente
-		.authorizedGrantTypes("password", "refresh_token") //Definir como se va a obtener el token
+		.authorizedGrantTypes("password", "refresh_token") //Definir como se va a obtener el token. Refresh token: generar otro access token sin preguntar las credenciales nuevamente
 		.accessTokenValiditySeconds(3600) //Definir tiempo validez del token (en segundos)
 		.refreshTokenValiditySeconds(3600); //Definir tiempo de refresh del token (en segundos)
 	}
 
 	/**
-	 * Componente para almacenar el token
+	 * Componente para almacenar el token y crear el token
 	 * @return
 	 */
 	@Bean

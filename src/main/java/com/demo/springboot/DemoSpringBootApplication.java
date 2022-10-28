@@ -20,10 +20,8 @@ public class DemoSpringBootApplication implements CommandLineRunner{
 	public void run(String... args) throws Exception {
 		String password= "12345";
 		
-		for (int i = 0; i < 4; i++) {
 			String passwordBCrypt= passwordEncode.encode(password);
 			System.out.println(passwordBCrypt);
-		}
 		
 	}
 
